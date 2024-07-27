@@ -361,7 +361,7 @@
                 android:textStyle="bold"/>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:onClick="onEqualClicked"
+                android:onClick="onOperatorClicked"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_rowWeight="1"
