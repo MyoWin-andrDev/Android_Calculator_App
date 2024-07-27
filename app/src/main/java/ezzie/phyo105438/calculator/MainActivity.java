@@ -67,22 +67,33 @@ public class MainActivity extends AppCompatActivity {
 
     public int evaluateExpression(List<Integer> intNum, List<String> operator){
         //Handle Multiplication and Division first
-        int result = 0;
         for(int i = 0 ; i < operator.size(); i++){
             String opStr = operator.get(i);
             if(opStr.equals("*") || opStr.equals("/")){
                 int leftValue = intNum.get(i);
                 int rightValue = intNum.get(i+1);
-                result = opStr.equals("*")? leftValue * rightValue : leftValue / rightValue ;
+                int result = opStr.equals("*")? leftValue * rightValue : leftValue / rightValue ;
 
                 //Replace the intList and operator list
                 intList.set(i,result);
                 intList.remove(i+1);
                 operatorList.remove(i);
                 i--;//Adjust index after removal
-
             }
         }
-            return result;
+
+        //Now handle addition and subtraction
+        int result = intList.get(0);
+        for(int i=0 ; i < intList.size() ; i++){
+            String opStr = operator.get(i);
+            int nextInput = intList.get(i+1);
+            if(opStr.equals("+")){
+                result += nextInput;
+            }
+            else if (opStr.equals("-")){
+                result -= nextInput;
+            }
+        }
+        return result;
     }
 }
