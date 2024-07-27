@@ -18,9 +18,9 @@ public class MainActivity extends AppCompatActivity {
     private ActivityRedBinding redBinding;
     private ActivityBlueBinding blueBinding;
 
-    List<String> operator = new ArrayList<>();
-    List<Integer> intNum= new ArrayList<>();
-    List<Double> douNum = new ArrayList<>();
+    List<String> operatorList = new ArrayList<>();
+    List<Integer> intList = new ArrayList<>();
+    List<Double> doubleList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         Button numberBtn = (Button) view;
         String text = numberBtn.getText().toString();
         String input = blueBinding.etCalculate.getText().toString();
-        if(input.equals("0") | input.equals("00")){
+        if(input.equals("0") || input.equals("00")){
             blueBinding.etCalculate.setText(text);
         }
         else{
@@ -47,5 +47,17 @@ public class MainActivity extends AppCompatActivity {
     public void onOperatorClicked(View view){
         Button operatorBtn = (Button) view;
         String operator = operatorBtn.getText().toString();
+
+        //Adding the current value to the NumList
+        if(operator.equals("=")){
+            int current = Integer.parseInt(blueBinding.etCalculate.getText().toString());
+            intList.add(current);
+        }
+    }
+
+    public int evaluateExpression(List<Integer> intNum, List<String> operator){
+
+
+
     }
 }
