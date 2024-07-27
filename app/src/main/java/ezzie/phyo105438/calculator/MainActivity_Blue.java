@@ -16,7 +16,6 @@ import ezzie.phyo105438.calculator.databinding.ActivityRedBinding;
 
 public class MainActivity_Blue extends AppCompatActivity {
 
-    private ActivityRedBinding redBinding;
     private ActivityBlueBinding blueBinding;
 
     List<String> operatorList = new ArrayList<>();
@@ -27,13 +26,13 @@ public class MainActivity_Blue extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         blueBinding = ActivityBlueBinding.inflate(getLayoutInflater());
-        redBinding = ActivityRedBinding.inflate(getLayoutInflater());
         setContentView(blueBinding.getRoot());
 
         blueBinding.actRed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity_Blue.this, MainActivity_Red.class);
+                startActivity(i);
             }
         });
 
@@ -107,9 +106,6 @@ public class MainActivity_Blue extends AppCompatActivity {
         }
     }
 
-    private void onClearClicked(View view){
-        blueBinding.etCalculate.setText("");
-    }
 
     public int evaluateExpression(List<Integer> intList, List<String> operatorList){
         //Handle Multiplication and Division first
@@ -147,5 +143,17 @@ public class MainActivity_Blue extends AppCompatActivity {
             }
         }
         return result;
+    }
+
+    public void onClearClicked(View view) {
+        blueBinding.etCalculate.setText("");
+    }
+
+    public void onBackSpaceClicked(View view) {
+        String current = blueBinding.etCalculate.getText().toString();
+        if(!current.isEmpty()){
+            String newText = current.substring(0, current.length() -1);
+            blueBinding.etCalculate.setText(newText);
+        }
     }
 }

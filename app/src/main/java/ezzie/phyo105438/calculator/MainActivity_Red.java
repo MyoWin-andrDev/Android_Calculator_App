@@ -17,7 +17,6 @@ import ezzie.phyo105438.calculator.databinding.ActivityRedBinding;
 public class MainActivity_Red extends AppCompatActivity {
 
     private ActivityRedBinding redBinding;
-    private ActivityBlueBinding blueBinding;
 
     List<String> operatorList = new ArrayList<>();
     List<Integer> intList = new ArrayList<>();
@@ -26,7 +25,6 @@ public class MainActivity_Red extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        blueBinding = ActivityBlueBinding.inflate(getLayoutInflater());
         redBinding = ActivityRedBinding.inflate(getLayoutInflater());
         setContentView(redBinding.getRoot());
 
@@ -34,6 +32,7 @@ public class MainActivity_Red extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(MainActivity_Red.this , MainActivity_Blue.class);
+                startActivity(i);
             }
         });
 
@@ -43,12 +42,12 @@ public class MainActivity_Red extends AppCompatActivity {
     public void onNumberClicked(View view){
         Button numberBtn = (Button) view;
         String text = numberBtn.getText().toString();
-        String input = blueBinding.etCalculate.getText().toString();
+        String input = redBinding.etCalculate.getText().toString();
         if(input.equals("0") || input.equals("00")){
-            blueBinding.etCalculate.setText(text);
+            redBinding.etCalculate.setText(text);
         }
         else{
-            blueBinding.etCalculate.append(text);
+            redBinding.etCalculate.append(text);
         }
     }
 
@@ -59,7 +58,7 @@ public class MainActivity_Red extends AppCompatActivity {
         //Adding the current value to the NumList
         if(operator.equals("=")){
             try {
-                String input = blueBinding.etCalculate.getText().toString();
+                String input = redBinding.etCalculate.getText().toString();
                 if(input.isEmpty()){
                     Toast.makeText(this, "Enter a number", Toast.LENGTH_SHORT).show();
                     return;
@@ -69,8 +68,8 @@ public class MainActivity_Red extends AppCompatActivity {
                 int result = evaluateExpression(intList, operatorList);
 
                 //Update UI
-                blueBinding.operation.setText("");
-                blueBinding.etCalculate.setText(String.valueOf(result));//For the next input
+                redBinding.operation.setText("");
+                redBinding.etCalculate.setText(String.valueOf(result));//For the next input
 
                 //Clearing list for the next calculation
                 intList.clear();
@@ -83,13 +82,13 @@ public class MainActivity_Red extends AppCompatActivity {
             }
         }
         else{
-            String input = blueBinding.etCalculate.getText().toString();
+            String input = redBinding.etCalculate.getText().toString();
             if(input.isEmpty()){
                 Toast.makeText(this, "Enter a number", Toast.LENGTH_SHORT).show();
                 return;
             }
             //Store the current value and operator
-            int current = Integer.parseInt(blueBinding.etCalculate.getText().toString());
+            int current = Integer.parseInt(redBinding.etCalculate.getText().toString());
             intList.add(current);
             operatorList.add(operator);
 
@@ -101,15 +100,12 @@ public class MainActivity_Red extends AppCompatActivity {
                     strBuilder.append(" ").append(operatorList.get(i)).append(" ");
                 }
             }
-            blueBinding.operation.setText(strBuilder);
-            blueBinding.etCalculate.setText("");
+            redBinding.operation.setText(strBuilder);
+            redBinding.etCalculate.setText("");
 
         }
     }
 
-    private void onClearClicked(View view){
-        blueBinding.etCalculate.setText("");
-    }
 
     public int evaluateExpression(List<Integer> intList, List<String> operatorList){
         //Handle Multiplication and Division first
@@ -147,5 +143,18 @@ public class MainActivity_Red extends AppCompatActivity {
             }
         }
         return result;
+    }
+
+    public void onClearClicked(View view) {
+
+        redBinding.etCalculate.setText("");
+    }
+
+    public void onBackSpaceClicked (View view ){
+        String current = redBinding.etCalculate.getText().toString();
+        if(!current.isEmpty()){
+            String newText = current.substring(0, current.length() -1);
+            redBinding.etCalculate.setText(newText);
+        }
     }
 }

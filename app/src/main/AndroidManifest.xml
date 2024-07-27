@@ -23,7 +23,7 @@
         </activity>
 <!--        Red Activity-->
         <activity
-            android:name=".MainActivity_Red"
+            android:name="ezzie.phyo105438.calculator.MainActivity_Red"
             android:exported="true">
 
         </activity>
