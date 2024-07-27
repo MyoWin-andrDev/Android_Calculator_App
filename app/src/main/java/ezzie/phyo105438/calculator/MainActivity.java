@@ -52,6 +52,15 @@ public class MainActivity extends AppCompatActivity {
         if(operator.equals("=")){
             int current = Integer.parseInt(blueBinding.etCalculate.getText().toString());
             intList.add(current);
+            int result = evaluateExpression(intList,operatorList);
+
+            //Update UI
+            blueBinding.operation.setText(String.valueOf(result));
+            blueBinding.etCalculate.setText("");//For the next input
+
+            //Clearing list for the next calculation
+            intList.clear();
+            operatorList.clear();
         }
         else{
             //Store the current value and operator
@@ -59,9 +68,17 @@ public class MainActivity extends AppCompatActivity {
             intList.add(current);
             operatorList.add(operator);
 
-            //Update UI
-            blueBinding.operation.setText(current);
-            blueBinding.etCalculate.setText("");//For the next input
+            //Update the operation display
+            StringBuilder strBuilder = new StringBuilder();
+            for(int i= 0 ; i < intList.size() ; i++){
+                strBuilder.append(intList.get(i));
+                if( i < operatorList.size()){
+                    strBuilder.append(" ").append(operatorList.get(i)).append("");
+                }
+            }
+            blueBinding.operation.setText(strBuilder);
+            blueBinding.etCalculate.setText("");
+
         }
     }
 
