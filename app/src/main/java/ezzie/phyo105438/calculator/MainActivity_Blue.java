@@ -1,10 +1,11 @@
 package ezzie.phyo105438.calculator;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
 import ezzie.phyo105438.calculator.databinding.ActivityBlueBinding;
 import ezzie.phyo105438.calculator.databinding.ActivityRedBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity_Blue extends AppCompatActivity {
 
     private ActivityRedBinding redBinding;
     private ActivityBlueBinding blueBinding;
@@ -28,6 +29,13 @@ public class MainActivity extends AppCompatActivity {
         blueBinding = ActivityBlueBinding.inflate(getLayoutInflater());
         redBinding = ActivityRedBinding.inflate(getLayoutInflater());
         setContentView(blueBinding.getRoot());
+
+        blueBinding.actRed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(MainActivity_Blue.this, MainActivity_Red.class);
+            }
+        });
 
     }
 
@@ -50,19 +58,36 @@ public class MainActivity extends AppCompatActivity {
 
         //Adding the current value to the NumList
         if(operator.equals("=")){
-            int current = Integer.parseInt(blueBinding.etCalculate.getText().toString());
-            intList.add(current);
-            int result = evaluateExpression(intList,operatorList);
+            try {
+                String input = blueBinding.etCalculate.getText().toString();
+                if(input.isEmpty()){
+                    Toast.makeText(this, "Enter a number", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                int current = Integer.parseInt(input);
+                intList.add(current);
+                int result = evaluateExpression(intList, operatorList);
 
-            //Update UI
-            blueBinding.operation.setText(String.valueOf(result));
-            blueBinding.etCalculate.setText("");//For the next input
+                //Update UI
+                blueBinding.operation.setText("");
+                blueBinding.etCalculate.setText(String.valueOf(result));//For the next input
 
-            //Clearing list for the next calculation
-            intList.clear();
-            operatorList.clear();
+                //Clearing list for the next calculation
+                intList.clear();
+                operatorList.clear();
+            } catch (NumberFormatException e){
+                Toast.makeText(this, "Invalid Action", Toast.LENGTH_SHORT).show();
+
+            } catch (Exception e){
+                Toast.makeText(this, "Error In Calculation", Toast.LENGTH_SHORT).show();
+            }
         }
         else{
+            String input = blueBinding.etCalculate.getText().toString();
+            if(input.isEmpty()){
+                Toast.makeText(this, "Enter a number", Toast.LENGTH_SHORT).show();
+                return;
+            }
             //Store the current value and operator
             int current = Integer.parseInt(blueBinding.etCalculate.getText().toString());
             intList.add(current);
@@ -73,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             for(int i= 0 ; i < intList.size() ; i++){
                 strBuilder.append(intList.get(i));
                 if( i < operatorList.size()){
-                    strBuilder.append(" ").append(operatorList.get(i)).append("");
+                    strBuilder.append(" ").append(operatorList.get(i)).append(" ");
                 }
             }
             blueBinding.operation.setText(strBuilder);
@@ -82,17 +107,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public int evaluateExpression(List<Integer> intNum, List<String> operator){
+    private void onClearClicked(View view){
+        blueBinding.etCalculate.setText("");
+    }
+
+    public int evaluateExpression(List<Integer> intList, List<String> operatorList){
         //Handle Multiplication and Division first
-        for(int i = 0 ; i < operator.size(); i++){
-            String opStr = operator.get(i);
+        for(int i = 0 ; i < operatorList.size(); i++){
+            String opStr = operatorList.get(i);
             if(opStr.equals("*") || opStr.equals("/")){
-                int leftValue = intNum.get(i);
-                int rightValue = intNum.get(i+1);
+                int leftValue = intList.get(i);
+                int rightValue = intList.get(i+1);
+
+                if (opStr.equals("/") && rightValue == 0) {
+                    throw new ArithmeticException("Cannot divide by zero");
+                }
+                //Calculate result based on the operator
                 int result = opStr.equals("*")? leftValue * rightValue : leftValue / rightValue ;
 
                 //Replace the intList and operator list
                 intList.set(i,result);
+
                 intList.remove(i+1);
                 operatorList.remove(i);
                 i--;//Adjust index after removal
@@ -101,8 +136,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Now handle addition and subtraction
         int result = intList.get(0);
-        for(int i=0 ; i < intList.size() ; i++){
-            String opStr = operator.get(i);
+        for(int i=0 ; i < operatorList.size() ; i++){
+            String opStr = operatorList.get(i);
             int nextInput = intList.get(i+1);
             if(opStr.equals("+")){
                 result += nextInput;
