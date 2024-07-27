@@ -53,11 +53,36 @@ public class MainActivity extends AppCompatActivity {
             int current = Integer.parseInt(blueBinding.etCalculate.getText().toString());
             intList.add(current);
         }
+        else{
+            //Store the current value and operator
+            int current = Integer.parseInt(blueBinding.etCalculate.getText().toString());
+            intList.add(current);
+            operatorList.add(operator);
+
+            //Update UI
+            blueBinding.operation.setText(current);
+            blueBinding.etCalculate.setText("");//For the next input
+        }
     }
 
     public int evaluateExpression(List<Integer> intNum, List<String> operator){
+        //Handle Multiplication and Division first
+        int result = 0;
+        for(int i = 0 ; i < operator.size(); i++){
+            String opStr = operator.get(i);
+            if(opStr.equals("*") || opStr.equals("/")){
+                int leftValue = intNum.get(i);
+                int rightValue = intNum.get(i+1);
+                result = opStr.equals("*")? leftValue * rightValue : leftValue / rightValue ;
 
+                //Replace the intList and operator list
+                intList.set(i,result);
+                intList.remove(i+1);
+                operatorList.remove(i);
+                i--;//Adjust index after removal
 
-
+            }
+        }
+            return result;
     }
 }
